@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
+require 'pony'
 
 configure do
   @db = SQLite3::Database.new 'barbershop.db'
@@ -58,6 +59,32 @@ post '/visit' do
   @message = "Дорогой #{@user_name}, #{@master_name} будет ожидать вас #{@datetime}."
 
   erb :visit
+end
+
+post '/contacts' do
+  @user_name = params[:user_name]
+  @email = params[:email]
+  @report = params[:report]
+
+  #Валидация
+  hh = { :user_name => 'Введите имя',
+         :email => 'Введите email',
+         :report => 'Введите сообщение' }
+
+  @error = hh.select {|key, value| params[key] == ''}.values.join(', ')
+  if @error != ''
+    return erb :contacts
+  end
+  @error = NIL
+
+  #Запись в файл
+  file_reports = File.open './public/reports.txt', 'a'
+  file_reports.write "Клиент: #{@user_name}, Email: #{@email}, Сообщение: #{@report}.\n"
+  file_reports.close
+
+  @message = "Дорогой #{@user_name}, ваше сообщение отправлено"
+
+  erb :contacts
 end
 
 #разобраться с бутстрапом для 21 урока. скорее всего
