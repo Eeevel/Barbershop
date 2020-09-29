@@ -5,8 +5,8 @@ require 'sqlite3'
 require 'pony'
 
 configure do
-  @db = SQLite3::Database.new 'barbershop.db'
-  @db.execute 'CREATE TABLE IF NOT EXISTS "Users"
+  db = SQLite3::Database.new 'barbershop.db'
+  db.execute 'CREATE TABLE IF NOT EXISTS "Users"
     (
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
       "username" TEXT,
@@ -15,6 +15,7 @@ configure do
       "barber" TEXT,
       "color" TEXT
     )'
+  db.close
 end
 
 get '/' do
@@ -50,6 +51,12 @@ post '/visit' do
     return erb :visit
   end
   @error = NIL
+
+  #Сохранение в базу данных
+  db = SQLite3::Database.new 'barbershop.db'
+  db.execute 'INSERT INTO Users (username, phone, datestamp, barber, color)
+  VALUES (?, ?, ?, ?, ?)', [@user_name, @phone, @datetime, @master_name, @color]
+  db.close
 
   #Запись в файл
   file_users = File.open './public/users.txt', 'a'
