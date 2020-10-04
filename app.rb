@@ -34,6 +34,15 @@ get '/contacts' do
   erb :contacts
 end
 
+get '/showusers' do
+  db = SQLite3::Database.new 'barbershop.db'
+  db.results_as_hash = true
+  @results = db.execute 'SELECT * FROM Users ORDER BY id'
+  db.close
+
+  erb :showusers
+end
+
 post '/visit' do
   @user_name = params[:user_name]
   @phone = params[:phone]
