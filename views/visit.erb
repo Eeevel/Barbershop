@@ -16,9 +16,9 @@
   <div class="form-group">
     <label>Выберите мастера:</label>
     <select name="master_name" class="form-control" >
-      <option <%= @master_name == 'Walter White' ? 'selected' : ''%>>Walter White</option>
-      <option <%= @master_name == 'Jessie Pinkman' ? 'selected' : ''%>>Jessie Pinkman</option>
-      <option <%= @master_name == 'Gus Fring' ? 'selected' : ''%>>Gus Fring</option>
+      <% @barbers.each do |barber| %>
+        <option <%= @master_name == barber['name'] ? 'selected' : ''%>><%= barber['name'] %></option>
+      <% end %>
     </select>
   </div>
 

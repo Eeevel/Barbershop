@@ -4,6 +4,13 @@ require 'sinatra/reloader'
 require 'sqlite3'
 require 'pony'
 
+before do
+  db = SQLite3::Database.new 'barbershop.db'
+  db.results_as_hash = true
+  @barbers = db.execute 'SELECT * FROM Barbers ORDER BY ID'
+  db.close
+end
+
 def is_barber_exists? (db, name)
   db.execute('SELECT * FROM Barbers WHERE name=?', [name]).length > 0
 end
